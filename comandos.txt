@@ -12,3 +12,4 @@ comunes:
 git add class_history_report.py
 git add .gitignore
 
+pylint class_history_report.py

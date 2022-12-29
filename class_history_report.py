@@ -1,12 +1,13 @@
 """Obtiene reporte de historia - Junta archivos CSV de historia y resume por agnio"""
 import os
 import pandas as pd
-from class_config import Config
 from sqlalchemy import create_engine
 import cx_Oracle
+from class_config import Config
+
 cfg = Config()
 
-cx_Oracle.init_oracle_client(lib_dir= cfg.getPar('lib_dir'))
+cx_Oracle.init_oracle_client(lib_dir= cfg.get_par('lib_dir'))
 
 class HistoryReport():
     """Procesa la historia de servidor"""
@@ -15,19 +16,19 @@ class HistoryReport():
         """Inicializa, con el inicio del nombre de los archivos, ej: caso HIST"""
 
     def _log(self,var):
-        """function _log""" 
+        """function _log"""
         print(f"HistoryReport:{var}")
 
     def get_engine_source(self):
         """function """
-        oracle_connection_string = 'oracle+cx_oracle://{username}:{password}@{host_}:{port}/{database}'
+        oracle_cnx_string = 'oracle+cx_oracle://{username}:{password}@{host_}:{port}/{database}'
         engine = create_engine(
-            oracle_connection_string.format(
-                username = cfg.getPar('username'),
-                password = cfg.getPar('password'),
-                host_    = cfg.getPar('hostname'),
-                port     = cfg.getPar('port'),
-                database = cfg.getPar('database')
+            oracle_cnx_string.format(
+                username = cfg.get_par('username'),
+                password = cfg.get_par('password'),
+                host_    = cfg.get_par('hostname'),
+                port     = cfg.get_par('port'),
+                database = cfg.get_par('database')
             )
             ,pool_timeout=99999
         )
@@ -42,12 +43,20 @@ class HistoryReport():
     def export_sql_csv_header(self, sql__, file__):
         """function """
         data = self.execute_sql_source(sql__)
-        data.to_csv(cfg.getPar('out_dir')+file__,index=False,sep=";",decimal=",",mode='a',header=True)
-        self._log(f"Export ejecutado:{cfg.getPar('database')}{file__}")
+        data.to_csv(cfg.get_par('out_dir')+file__,index=False,
+            sep=";",decimal=",",mode='a',header=True)
+        self._log(f"Export ejecutado:{cfg.get_par('database')}{file__}")
+        return data
+
+    def export_metadata_counts(self):
+        """function """
+        sql_  = cfg.get_par('QUERY_METADATA_COUNTS')
+        data  = self.execute_sql_source(sql_)
+        data.to_csv(cfg.get_par('out_dir') + "METADATA_COUNTS.csv",index=False,sep=";",decimal=",")
         return data
 
     def procesa_history_files(self):
-        """procesa_history_files: """ 
+        """procesa_history_files: """
         print(f"Procesando archivos de historia:BBB_HISTORIA_{self.name_}")
 
         ruta = "C:/Users/rcastillosi/__SQL_DATABASE_STATS__/__EXPORT_DATA__/"

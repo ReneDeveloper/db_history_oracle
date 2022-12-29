@@ -1,13 +1,17 @@
-"""Clase de configuración"""
+"""configuration class"""
 pars_ = {}
 
-def getPar_(par_):
+def get_parameter(par_):
+    """Get config parameter"""
     return pars_[par_]
 
 class Config:
-    def getPar(self, par__):
-        return getPar_(par__)
-    def setPar(self, par__, val__):
+    """class to obtain config parameters"""
+    def get_par(self, par__):
+        """Get config parameter"""
+        return get_parameter(par__)
+    def set_par(self, par__, val__):
+        """Set config parameter"""
         pars_[par__]=val__
 
 #parametro de bbdd source
@@ -23,7 +27,6 @@ pars_["out_dir"]="C:/Users/rcastillosi/__SQL_DATABASE_STATS__/__EXPORT_DATA__/"
 pars_["TARGET_NAME"]="TABLE_HISTORY"
 pars_["out_path"]="C:/Users/rcastillosi/__SQL_DATABASE_STATS__/__EXPORT_DATA__/"
 pars_["out_sqllite"]=f'sqlite:///{pars_["out_path"]}/SQLLITE_EXPORT_HISTORY.db'
-
 #parametros para nombres de archivos
 pars_["pre_metadata"]="METADATA_"
 #parametro de queries
@@ -33,7 +36,7 @@ select owner,
        num_rows
 from sys.dba_tables
                             """
-                            
+
 pars_["QUERY_PARAMETRICO_COLUMNAS_FECHA"] = """
 select owner,table_name, column_name
 from DBA_TAB_COLUMNS c WHERE (owner, table_name, column_id) in (
